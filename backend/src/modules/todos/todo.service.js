@@ -17,7 +17,7 @@ export const getUserTodos = async(userId) => {
 
 export const updateTodo = async({ todoId, userId, data }) => {
     return Todo.findOneAndUpdate(
-        { _id: todoId , uss: userId },
+        { _id: todoId , user: userId },
         data,
         {new: true },
     );
@@ -31,7 +31,7 @@ export const deleteTodo = async ({ todoId , userId }) => {
 export const reorderTodos = async ( { userId , items } ) => {
     const bulkOps = items.map((item) =>({
         updateOne: {
-            filter: { _id: item.id , ussr: user.id },
+            filter: { _id: item.id , user: userId },
             update: { order: item.order }
         },
     }));
