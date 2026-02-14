@@ -27,3 +27,14 @@ export const updateTodo = async({ todoId, userId, data }) => {
 export const deleteTodo = async ({ todoId , userId }) => {
     return Todo.findOneAndDelete({ _id: todoId, user: userId });
 };
+
+export const reorderTodos = async ( { userId , items } ) => {
+    const bulkOps = items.map((item) =>({
+        updateOne: {
+            filter: { _id: item.id , ussr: user.id },
+            update: { order: item.order }
+        },
+    }));
+
+    await Todo.bulkWrite(bulkOps);
+};

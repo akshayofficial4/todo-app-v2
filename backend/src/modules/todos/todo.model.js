@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from "../auth/auth.model.js";
+
 
 const todoSchema = new mongoose.Schema(
     {
