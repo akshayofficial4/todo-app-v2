@@ -6,22 +6,40 @@ const Dashboard = ( { onLogout } ) => {
 
   const [ todos , setTodos ] = useState([]);
   const [ title , setTitle ] = useState("");
+  const [filter , setFilter] = useState("all");
 
   useEffect(() => {
     fetchTodos();
   }, [])
 
   const fetchTodos = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:5000/api/todos", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const token = localStorage.getItem("token");
 
-    const data  = await res.json();
-    setTodos(data);
-  };
+  if (!token) {
+    console.warn("No token found, logging out");
+    onLogout();
+    setTodos([]);
+    return;
+  }
+
+  const res = await fetch("http://localhost:5000/api/todos", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.error("Failed to fetch todos:", res.status);
+    setTodos([]); // prevent map crash
+    return;
+  }
+
+  const data = await res.json();
+
+  // EXTRA SAFETY
+  setTodos(Array.isArray(data) ? data : []);
+};
+
 
   const createTodo = async () => {
     if(!title.trim()) return;
@@ -55,6 +73,12 @@ const Dashboard = ( { onLogout } ) => {
       fetchTodos();
   }
 
+  const filteredTodos = todos.filter((todo) => {
+    if( filter === "active" ) return !todo.completed;
+    if( filter === "completed" ) return todo.completed;
+    return true;
+  });
+
   const deleteTodo = async (id) => {
     const token = localStorage.getItem("token");
     await fetch(`http://localhost:5000/api/todos/${id}`, {
@@ -73,7 +97,6 @@ const Dashboard = ( { onLogout } ) => {
 
         <div className='flex justify-between items-center mb-6'>
             <h1 className='text-2xl font-bold'>My Todos</h1>
-
             <button onClick={onLogout} className='px-4 py-2 bg-red-500 text-black rounded'>Logout</button>
         </div>
 
@@ -88,14 +111,31 @@ const Dashboard = ( { onLogout } ) => {
             <button className='px-4 lg:px-8 py-1 bg-green-500 text-black rounded' onClick={createTodo}>Add</button>
         </div>
 
+      
+        <div className='flex gap-2 mb-6'>
+
+          <button className=''>all</button>
+
+          <button>active</button>
+
+          <button>completed</button>
+
+        </div>
+
 
           {
           todos.length === 0 ? (
-            <p className='text-gray-400 pt-6'>No todos yet...</p>
+            <div className='text-center text-gray-400 mt-20'>
+
+                <p className="text-lg">No todos yet 📝</p>
+
+                <p className='text-sm mt-5'>Add first todo above</p>
+
+            </div>
           ) : (
             <ul className='space-y-3  min-w-[60%] '>
                  { todos.map((todo) => (
-                    <li key={todo._id} className="bg-gray-800 p-4 rounded-lg">
+                    <li key={todo._id} className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">
                       <div className="flex items-center gap-3">
                         <span
                           onClick={() => toggleTodo(todo)}
@@ -110,7 +150,7 @@ const Dashboard = ( { onLogout } ) => {
 
                         <span
                           className={
-                            todo.completed ? "line-through text-gray-400" : ""
+                            todo.completed ? "line-through text-gray-400" : "text-white"
                           }
                         >
                           {todo.title}
@@ -121,7 +161,7 @@ const Dashboard = ( { onLogout } ) => {
                             e.stopPropagation();
                             deleteTodo(todo._id);
                           }}
-                          className="ml-auto text-red-400 hover:text-red-300"
+                          className="ml-auto text-red-400 hover:text-red-500"
                         >
                           <Trash2 size={18} />
                         </button>
