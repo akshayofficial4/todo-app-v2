@@ -80,6 +80,8 @@ const Dashboard = ( { onLogout } ) => {
   });
 
   const deleteTodo = async (id) => {
+    const confirmDelete = window.confirm(" Are uy sure want to delete this todo");
+    if(!confirmDelete) return;
     const token = localStorage.getItem("token");
     await fetch(`http://localhost:5000/api/todos/${id}`, {
       method: "DELETE",
@@ -97,7 +99,7 @@ const Dashboard = ( { onLogout } ) => {
 
         <div className='flex justify-between items-center mb-6'>
             <h1 className='text-2xl font-bold'>My Todos</h1>
-            <button onClick={onLogout} className='px-4 py-2 bg-red-500 text-black rounded'>Logout</button>
+            <button onClick={onLogout} className='px-4 py-2 bg-red-500 text-black rounded hover:bg-red-400 transition duration-500 hover:scale-110'>Logout</button>
         </div>
 
         
@@ -107,20 +109,29 @@ const Dashboard = ( { onLogout } ) => {
 
 
         <div className='flex gap-2 mb-6 min-w-[60%] '>
-            <input type='text' value={title} placeholder='Enter the todos' onChange={(e) => setTitle(e.target.value)} className='flex-1 p-3 rounded bg-gray-800 outline-none ' />
-            <button className='px-4 lg:px-8 py-1 bg-green-500 text-black rounded' onClick={createTodo}>Add</button>
+            <input type='text' value={title} placeholder='Enter the todos' onKeyDown={(e) => {
+              e.key === 'Enter' ? createTodo() : ("");
+            }} onChange={(e) => setTitle(e.target.value)} className='flex-1 p-3 rounded bg-gray-800 outline-none ' />
+            <button className='px-4 lg:px-8 py-1 bg-green-500 text-black rounded hover:bg-green-400 transition duration-500 hover:scale-110' onClick={createTodo}>Add</button>
         </div>
 
       
-        <div className='flex gap-2 mb-6'>
+        {
+          todos.length !== 0 ? (
+              <div className='flex gap-2 mb-6'>
 
-          <button className=''>all</button>
+                  <button onClick={() => setFilter("all")} className= { ` px-3 py-1 rounded ${
+                    filter === "all" ? "bg-blue-500 text-white font-bold":"bg-gray-700"
+                  }`}>All</button>
 
-          <button>active</button>
+                  <button onClick={() => setFilter("active")} className={ `px-3 py-1 rounded ${filter === "active" ? "bg-blue-500 text-white font-bold" : "bg-gray-700" }` }>Active</button>
 
-          <button>completed</button>
+                  <button onClick={() => setFilter("completed")} className={ `px-3 py-1 ${ filter === "completed" ? "bg-blue-500 text-white font-bold" : "bg-gray-700" } ` } >completed</button>
 
-        </div>
+              </div>
+
+          ) : ("")
+        }
 
 
           {
@@ -134,7 +145,7 @@ const Dashboard = ( { onLogout } ) => {
             </div>
           ) : (
             <ul className='space-y-3  min-w-[60%] '>
-                 { todos.map((todo) => (
+                 { filteredTodos.map((todo) => (
                     <li key={todo._id} className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">
                       <div className="flex items-center gap-3">
                         <span

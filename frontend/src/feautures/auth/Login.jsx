@@ -31,8 +31,11 @@ function Login({onLoginSuccess}) {
                 alert("Login failed");
                 throw new Error(data.message || "login failed");
             }
-            console.log("Login success" , data);
+           
             localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.user.role);
+            
+
             onLoginSuccess();
             alert("login successful");
             

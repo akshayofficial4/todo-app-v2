@@ -3,6 +3,7 @@ import cors from 'cors';
 import authRoutes from './modules/auth/auth.routes.js'
 import { requireAuth } from './middlewares/auth.middleware.js';
 import todoRoutes from "./modules/todos/todo.routes.js";
+import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 
 const app = express();
 
@@ -11,6 +12,7 @@ const app = express();
  app.use(express.json());
 
  app.use("/api/auth", authRoutes);
+ app.use("/api/analytics", analyticsRoutes);
  app.use("/api/todos", todoRoutes);
 
  app.get("/api/protected", requireAuth, ( req , res ) => {
