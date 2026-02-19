@@ -9,7 +9,7 @@ The project is fully deployed.
 ## Live Demo
 
 Frontend (Vercel):  
-https://YOUR-FRONTEND-URL.vercel.app
+https://todo-app-v2-nu.vercel.app/
 
 Backend (Render):  
 https://todo-app-v2-zgmj.onrender.com
