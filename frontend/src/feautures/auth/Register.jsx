@@ -4,7 +4,7 @@ import { useState } from 'react'
 function Register({onRegisterSuccess}) {
   const [ username , setUsername ] = useState("");
   const [email , setEmail ] = useState("");
-  const [ password , setpassword ] = useState("");
+  const [ password , setPassword ] = useState("");
   const [ error , setError ] = useState("");
   const [ loading , setLoading ] = useState("");
 
@@ -20,7 +20,7 @@ function Register({onRegisterSuccess}) {
       setLoading(true);
       setError("");
 
-      const res = await fetch("http://localhost:5000/api/auth/register",{
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`,{
         method: "POST",
         headers : {
           "Content-type" : "application/json",
@@ -92,7 +92,7 @@ function Register({onRegisterSuccess}) {
               type='password'
               value={password}
               placeholder='enter password'
-              onChange={(e) => setpassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className='w-full px-4 py-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
             />
 

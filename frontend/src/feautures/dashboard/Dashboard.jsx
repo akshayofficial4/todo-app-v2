@@ -25,7 +25,7 @@ const Dashboard = ( { onLogout } ) => {
       return;
     }
 
-    const res = await fetch("http://localhost:5000/api/todos", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/todos`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -48,7 +48,7 @@ const Dashboard = ( { onLogout } ) => {
 
     // EDIT MODE
     if (editTodoId) {
-      await fetch(`http://localhost:5000/api/todos/${editTodoId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/todos/${editTodoId}`, {
         method: "PATCH",
         headers: {
           "Content-Type" : "application/json",
@@ -59,7 +59,7 @@ const Dashboard = ( { onLogout } ) => {
     } 
     // ADD MODE
     else {
-      await fetch("http://localhost:5000/api/todos", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/todos`, {
         method: "POST",
         headers: {
           "Content-Type" : "application/json",
@@ -78,7 +78,7 @@ const Dashboard = ( { onLogout } ) => {
   const toggleTodo = async (todo) => {
     const token = localStorage.getItem("token");
 
-    await fetch(`http://localhost:5000/api/todos/${todo._id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type" : "application/json",
@@ -101,7 +101,7 @@ const Dashboard = ( { onLogout } ) => {
     const confirmDelete = window.confirm(" Are uy sure want to delete this todo");
     if(!confirmDelete) return;
     const token = localStorage.getItem("token");
-    await fetch(`http://localhost:5000/api/todos/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/todos/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
